@@ -20,3 +20,11 @@ func (h home) handleHome(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "text/html")
 	h.homeTemplate.Execute(w, vm)
 }
+
+/*
+func (h home) handleLogin(w http.ResponseWriter, r *http.Request) {
+	vm := view.NewLogin()
+	w.Header().Add("Content-Type", "text/html")
+	h.homeTemplate.Execute(w, vm)
+}
+*/
