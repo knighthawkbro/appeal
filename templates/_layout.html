@@ -12,7 +12,6 @@
     <!-- BootStrap -->
     <link rel="stylesheet" href="/css/bootstrap.min.css" >
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css" >
-    <link rel="stylesheet" href="/css/dashboard.css">
     {{ block "styles" . }}{{ end }}
     {{ template "_shim.html" . }}
 </head>
@@ -20,8 +19,6 @@
     {{ template "_header.html" . }}
     {{ template "content" . }}
     {{ template "_footer.html" . }}
-    
-    <p>Test</p>
     <!-- Need to keep the javascript in this order --> 
     <script src="/js/jquery.slim.min.js"></script>
     <script src="/js/bootstrap.min.js" ></script>
