@@ -7,12 +7,14 @@ import (
 )
 
 type home struct {
-	homeTemplate *template.Template
+	homeTemplate  *template.Template
+	loginTemplate *template.Template
 }
 
 func (h home) registerRoutes() {
 	http.HandleFunc("/", h.handleHome)
 	http.HandleFunc("/home", h.handleHome)
+	http.HandleFunc("/login", h.handleLogin)
 }
 
 func (h home) handleHome(w http.ResponseWriter, r *http.Request) {
@@ -21,10 +23,8 @@ func (h home) handleHome(w http.ResponseWriter, r *http.Request) {
 	h.homeTemplate.Execute(w, vm)
 }
 
-/*
 func (h home) handleLogin(w http.ResponseWriter, r *http.Request) {
 	vm := view.NewLogin()
 	w.Header().Add("Content-Type", "text/html")
-	h.homeTemplate.Execute(w, vm)
+	h.loginTemplate.Execute(w, vm)
 }
-*/
