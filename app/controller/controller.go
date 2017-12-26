@@ -14,4 +14,5 @@ func Startup(templates map[string]*template.Template) {
 	homeController.registerRoutes()
 	http.Handle("/img/", http.FileServer(http.Dir("public")))
 	http.Handle("/css/", http.FileServer(http.Dir("public")))
+	http.Handle("/js/", http.FileServer(http.Dir("public")))
 }
