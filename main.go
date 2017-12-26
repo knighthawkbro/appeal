@@ -2,6 +2,7 @@ package main
 
 import (
 	"appeals/app/controller"
+	"appeals/app/middleware"
 	"appeals/app/model"
 	"database/sql"
 	"fmt"
@@ -20,8 +21,7 @@ func main() {
 	db := connectToDatabase()
 	defer db.Close()
 	controller.Startup(templates)
-	//http.ListenAndServe(":3000", nil)
-	http.ListenAndServeTLS(":8000", "cert.pem", "key.pem", nil) //new(middleware.GzipMiddleware))
+	http.ListenAndServeTLS(":8000", "cert.pem", "key.pem", new(middleware.GzipMiddleware))
 }
 
 func connectToDatabase() *sql.DB {
