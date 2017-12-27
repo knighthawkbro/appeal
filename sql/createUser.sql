@@ -1,5 +1,5 @@
-USE appealsData;
+USE appealData;
 GO
 
-CREATE LOGIN Appeal WITH PASSWORD = 'P@SSw0rd!';
+CREATE LOGIN appeals WITH PASSWORD = 'P@SSw0rd!';
 GO
