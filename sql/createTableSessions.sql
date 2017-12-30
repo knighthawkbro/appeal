@@ -11,6 +11,6 @@ CREATE TABLE dbo.tblSessions
     uuid [NVARCHAR](50),
     email [NVARCHAR](50),
     user_id [NVARCHAR](50),
-    created_at DATETIME
+    created_at INTEGER
 );
 GO

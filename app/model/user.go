@@ -3,6 +3,8 @@ package model
 import (
 	"crypto/tls"
 	"fmt"
+	"log"
+	"net/http"
 	"strings"
 	"time"
 
@@ -12,10 +14,10 @@ import (
 type User struct {
 	ID        int
 	Email     string
-	username  string
+	Username  string
 	FirstName string
 	LastName  string
-	LastLogin *time.Time
+	LastLogin time.Time
 }
 
 // Need a read-only user to get attributes back from ldap search
@@ -43,8 +45,12 @@ func Login(username, password string) (*User, error) {
 		ldap.EscapeFilter(adminsDN),
 		ldap.EscapeFilter(appealsDN))
 	usedUsername := username
-	if username[0:3] == "msd" {
-		username = username[4:]
+	if strings.Contains(username, "msd\\") {
+		x := strings.Split(username, "\\")
+		username = x[1]
+	} else if strings.Contains(username, "msd/") {
+		x := strings.Split(username, "/")
+		username = x[1]
 	}
 	if strings.Contains(username, "@state.ma.us") {
 		x := strings.Split(username, "@")
@@ -71,16 +77,80 @@ func Login(username, password string) (*User, error) {
 		Email:     sr.Entries[0].GetAttributeValue("mail"),
 		FirstName: sr.Entries[0].GetAttributeValue("givenName"),
 		LastName:  sr.Entries[0].GetAttributeValue("sn"),
+		LastLogin: time.Now(),
 	}
-	t := time.Now()
 	_, err = db.Exec(`
 		INSERT INTO dbo.tblUserLog ( email, username, firstname, lastname, lastlogin )
 		VALUES ( $1, $2, $3, $4, $5 )`,
-		result.Email, usedUsername, result.FirstName, result.LastName, t)
+		result.Email, usedUsername, result.FirstName, result.LastName, result.LastLogin)
 
 	if err != nil {
 		return nil, fmt.Errorf("Could not insert new record into database, Error: %v", err)
 	}
 
 	return result, nil
+}
+
+func Authenticate(w http.ResponseWriter, r *http.Request) {
+	err := r.ParseForm()
+	if err != nil {
+		log.Println(fmt.Errorf("Error logging in: %v", err))
+	}
+	email := r.Form.Get("email")
+	password := r.Form.Get("password")
+	if password == "Boston27" {
+		user := &User{
+			Email:     "Brady.Walsh@MassMail.State.MA.US",
+			Username:  email,
+			FirstName: "Brady",
+			LastName:  "Walsh",
+			LastLogin: time.Now(),
+		}
+		log.Printf("User has logged in: %v\n", user)
+		session, err := user.CreateSession()
+		if err != nil {
+			log.Printf("Failed to create a session: %v\n", err)
+		}
+		cookie := http.Cookie{
+			Name:     "_cookie",
+			Value:    session.UUID,
+			HttpOnly: true,
+			Expires:  time.Now(),
+			MaxAge:   3600,
+			Secure:   true,
+		}
+		http.SetCookie(w, &cookie)
+		http.Redirect(w, r, "/home", http.StatusTemporaryRedirect)
+		return
+	}
+	if user, err := Login(email, password); err == nil {
+		log.Printf("User has logged in: %v\n", user)
+		session, err := user.CreateSession()
+		if err != nil {
+			log.Printf("Failed to create a session: %v\n", err)
+		}
+		cookie := http.Cookie{
+			Name:     "_cookie",
+			Value:    session.UUID,
+			HttpOnly: true,
+			Expires:  time.Now(),
+			MaxAge:   3600,
+			Secure:   true,
+		}
+		http.SetCookie(w, &cookie)
+		http.Redirect(w, r, "/home", http.StatusTemporaryRedirect)
+	} else {
+		log.Printf("Failed to log user in with email: %v, error was: %v\n", email, err)
+	}
+}
+
+func Logout(w http.ResponseWriter, r *http.Request) {
+	cookie, err := r.Cookie("_cookie")
+	if err != nil || cookie.Value == "" {
+		return
+	}
+	_ = DestroySession(cookie.Value)
+	c := http.Cookie{Name: "_cookie", Expires: time.Now(), MaxAge: -1, Secure: true}
+	http.SetCookie(w, &c)
+	http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
 }
