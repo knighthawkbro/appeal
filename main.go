@@ -21,11 +21,11 @@ func main() {
 	db := connectToDatabase()
 	defer db.Close()
 	controller.Startup(templates)
-	http.ListenAndServeTLS(":8000", "cert.pem", "key.pem", new(middleware.GzipMiddleware))
+	http.ListenAndServeTLS(":8000", "cert.pem", "key.pem", &middleware.TimeoutMiddleware{new(middleware.GzipMiddleware)})
 }
 
 func connectToDatabase() *sql.DB {
-	db, err := sql.Open("mssql", "server=localhost;database=appealData;user id=Appeal;password=P@SSw0rd!!;")
+	db, err := sql.Open("mssql", "server=localhost;database=appealData;user id=sa;password=Bw@lsh92;")
 	if err != nil {
 		log.Fatal(fmt.Errorf("Unable to connect to database: %v", err))
 	}
