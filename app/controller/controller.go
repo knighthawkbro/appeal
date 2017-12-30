@@ -6,13 +6,15 @@ import (
 )
 
 var (
-	homeController home
+	homeController   home
+	noticeController notice
 )
 
 func Startup(templates map[string]*template.Template) {
 	homeController.homeTemplate = templates["home.html"]
 	homeController.loginTemplate = templates["login.html"]
 	homeController.registerRoutes()
+	noticeController.registerRoutes()
 	http.Handle("/img/", http.FileServer(http.Dir("public")))
 	http.Handle("/css/", http.FileServer(http.Dir("public")))
 	http.Handle("/js/", http.FileServer(http.Dir("public")))
