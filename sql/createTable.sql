@@ -245,3 +245,22 @@ CREATE TABLE dbo.tblOutreach
         ON UPDATE CASCADE
 );
 GO
+
+-- INSERTING SOME TEST DATA INTO THE DATABASE.
+-- Insert rows into table 'TableName'
+INSERT INTO dbo.tblAppealData
+( -- columns to insert data into
+ FNAME, LNAME, DOB, Address, City, State, Zip, Appeals_ID
+)
+VALUES
+( -- first row: values for the columns in the list above
+    'Brady', 'Walsh', '01/12/1992', '252 Kennedy Drive Apt. #408', 'Malden', 'MA', '02148', 'ACA18-00001'
+),
+( -- second row: values for the columns in the list above
+    'Anastasia', 'Walsh', '01/09/1993', '252 Kennedy Drive Apt. #408', 'Malden', 'MA', '02148', 'ACA18-00002'
+),
+( -- third row: values for the columns in the list above
+    'Health', 'Connector', '08/01/2006', '100 City Hall Plaza', 'Boston', 'MA', '02108', 'ACA18-00003'
+)
+-- add more rows here
+GO
