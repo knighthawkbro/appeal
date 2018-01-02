@@ -17,30 +17,6 @@ type Notice struct {
 	Document *gofpdf.Fpdf
 }
 
-// Appeal struct that defines what data a Notice should receive
-/* This is subject to change once I add a appeal model */
-type Appeal struct {
-	FirstName    string
-	LastName     string
-	Address      string
-	City         string
-	State        string
-	Zip          string
-	AppealNumber string
-	Comment      template.HTML
-}
-
-var appeal = Appeal{
-	FirstName:    "Anastasia",
-	LastName:     "Walsh",
-	Address:      "252 Kennedy Drive Apt. 408",
-	City:         "Malden",
-	State:        "MA",
-	Zip:          "02148",
-	AppealNumber: "ACA17-3405",
-	Comment:      `This is a merged comment.<br>Any details about the appeal will go here. It can be <b>formatted</b> <i>too</i>!`,
-}
-
 func (n *Notice) headerFunc() {
 	n.Document.ImageOptions("./assets/images/logo.png", 145, 4, 51.054, 0, false, gofpdf.ImageOptions{}, 0, "")
 	n.Document.SetFont("Kameron", "B", 15)
@@ -55,7 +31,7 @@ func (n *Notice) footerFunc() {
 	n.Document.MultiCell(0, 5, "Health Connector Appeals Unit\nP.O. Box 960189, Boston, MA 02196\n617-933-3030 Fax 617-933-3099\nBusiness Hours Monday-Friday 8am-5pm", "0", "C", false)
 }
 
-func (n *Notice) appealHeaderFunc(a Appeal) {
+func (n *Notice) appealHeaderFunc(a *Appeal) {
 	t := time.Now()
 	n.Document.Ln(0.1)
 	n.Document.Cellf(0, 10, "%v %v, %v", t.Month(), t.Day(), t.Year())
@@ -76,7 +52,7 @@ func (n *Notice) appealHeaderFunc(a Appeal) {
 	n.Document.Ln(12)
 }
 
-func (n *Notice) bodyFunc(a Appeal) {
+func (n *Notice) bodyFunc(a *Appeal) {
 	n.Document.SetCellMargin(7)
 	var templ *template.Template
 	templ, err := templ.ParseFiles("./assets/templates/acknowledgementNoAidPending.html")
@@ -107,7 +83,7 @@ func setFonts(pdf *gofpdf.Fpdf) {
 }
 
 // NewNotice Generates a new notice.
-func NewNotice() *Notice {
+func NewNotice(appeal *Appeal) *Notice {
 	notice := &Notice{}
 	notice.Document = gofpdf.New("P", "mm", "A4", "./assets/fonts/")
 
