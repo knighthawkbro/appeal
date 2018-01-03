@@ -8,11 +8,19 @@ var db DB
 
 type DB interface {
 	QueryRow(string, ...interface{}) Row
+	Query(string, ...interface{}) (Rows, error)
 	Exec(string, ...interface{}) (Result, error)
 }
 
 type Row interface {
 	Scan(...interface{}) error
+}
+
+type Rows interface {
+	Scan(...interface{}) error
+	Close() error
+	Next() bool
+	Err() error
 }
 
 type Result interface {
@@ -30,6 +38,10 @@ func (s sqlDB) QueryRow(query string, args ...interface{}) Row {
 
 func (s sqlDB) Exec(query string, args ...interface{}) (Result, error) {
 	return s.db.Exec(query, args...)
+}
+
+func (s sqlDB) Query(query string, args ...interface{}) (Rows, error) {
+	return s.db.Query(query, args...)
 }
 
 func SetDatabase(database *sql.DB) {

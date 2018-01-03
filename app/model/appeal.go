@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"html/template"
+	"log"
 )
 
 // Appeal struct that defines what data a Notice should receive
@@ -36,4 +37,30 @@ func GetAppealByID(id int) (*Appeal, error) {
 		return result, err
 	}
 	return result, nil
+}
+
+func ShowAllAppeals() []*Appeal {
+	result := []*Appeal{}
+
+	rows, err := db.Query(`
+		SELECT CC_Person_ID, FNAME, LNAME, Address, City, State, Zip, Appeals_ID
+		FROM dbo.tblAppealData`)
+	if err != nil {
+		log.Println(err)
+		return result
+	}
+	defer rows.Close()
+	for rows.Next() {
+		var a *Appeal
+		if err := rows.Scan(&a.ID, &a.FirstName, &a.LastName, &a.Address, &a.City, &a.State, &a.Zip, &a.AppealNumber); err != nil {
+			log.Println(err)
+			return result
+		}
+		result = append(result, a)
+	}
+	if err := rows.Err(); err != nil {
+		log.Println(err)
+		return result
+	}
+	return result
 }
