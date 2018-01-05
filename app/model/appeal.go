@@ -44,15 +44,17 @@ func ShowAllAppeals() []*Appeal {
 
 	rows, err := db.Query(`
 		SELECT CC_Person_ID, FNAME, LNAME, Address, City, State, Zip, Appeals_ID
-		FROM dbo.tblAppealData`)
+		FROM dbo.tblAppealData
+		ORDER BY CC_Person_ID desc`)
 	if err != nil {
 		log.Println(err)
 		return result
 	}
 	defer rows.Close()
 	for rows.Next() {
-		var a *Appeal
-		if err := rows.Scan(&a.ID, &a.FirstName, &a.LastName, &a.Address, &a.City, &a.State, &a.Zip, &a.AppealNumber); err != nil {
+		a := &Appeal{}
+		err := rows.Scan(&a.ID, &a.FirstName, &a.LastName, &a.Address, &a.City, &a.State, &a.Zip, &a.AppealNumber)
+		if err != nil {
 			log.Println(err)
 			return result
 		}
