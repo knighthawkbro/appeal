@@ -39,6 +39,15 @@ func GetAppealByID(id int) (*Appeal, error) {
 	return result, nil
 }
 
+func count() (count int) {
+	row := db.QueryRow(`
+		SELECT count(*)
+		FROM dbo.tblAppealData`)
+	row.Scan(&count)
+	log.Println(count)
+	return count
+}
+
 func ShowAllAppeals() []*Appeal {
 	result := []*Appeal{}
 
