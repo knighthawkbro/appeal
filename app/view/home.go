@@ -2,32 +2,19 @@ package view
 
 import (
 	"appeals/app/model"
-	"fmt"
 )
 
 type Home struct {
-	Title   string
-	Active  string
-	Appeals []*model.Appeal
-}
-
-type Appeal struct {
-	URL   string
 	Title string
+	//Active  string
+	Appeals []*model.Appeal
 }
 
 func NewHome() Home {
 	result := Home{
-		Active:  "home",
+		//Active: "home",
 		Title:   "Appeals",
 		Appeals: model.ShowAllAppeals(),
 	}
 	return result
-}
-
-func appealtoVM(c model.Appeal) Appeal {
-	return Appeal{
-		URL:   fmt.Sprintf("/shop/%v", c.ID),
-		Title: fmt.Sprintf("Appeals - %v %v", c.FirstName, c.LastName),
-	}
 }
