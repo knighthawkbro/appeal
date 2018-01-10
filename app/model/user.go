@@ -3,7 +3,6 @@ package model
 import (
 	"crypto/tls"
 	"fmt"
-	"log"
 	"net/http"
 	"strings"
 	"time"
@@ -62,12 +61,9 @@ func Login(username, password string) (*User, error) {
 		fmt.Sprintf("(&(objectClass=user)(|(sAMAccountName=%s)(mail=%s))%s)", username, username, Groups),
 		[]string{"dn", "mail", "givenName", "sn"}, nil,
 	)
-	sr, err := l.Search(searchRequest)
-	if err != nil {
-		return nil, err
-	}
+	sr, _ := l.Search(searchRequest)
 	if len(sr.Entries) != 1 {
-		return nil, fmt.Errorf("User not found, Contact your Admin if this is incorrect")
+		return nil, fmt.Errorf("User not found or Not an Appeals team member")
 	}
 	err = l.Bind(sr.Entries[0].DN, password)
 	if err != nil {
@@ -83,18 +79,16 @@ func Login(username, password string) (*User, error) {
 		INSERT INTO dbo.tblUserLog ( email, username, firstname, lastname, lastlogin )
 		VALUES ( $1, $2, $3, $4, $5 )`,
 		result.Email, usedUsername, result.FirstName, result.LastName, result.LastLogin)
-
 	if err != nil {
 		return nil, fmt.Errorf("Could not insert new record into database, Error: %v", err)
 	}
-
 	return result, nil
 }
 
-func Authenticate(w http.ResponseWriter, r *http.Request) {
+func Authenticate(w http.ResponseWriter, r *http.Request) error {
 	err := r.ParseForm()
 	if err != nil {
-		log.Println(fmt.Errorf("Error logging in: %v", err))
+		return err
 	}
 	email := r.Form.Get("email")
 	password := r.Form.Get("password")
@@ -106,10 +100,9 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 			LastName:  "Walsh",
 			LastLogin: time.Now(),
 		}
-		log.Printf("User has logged in: %v\n", user)
 		session, err := user.CreateSession()
 		if err != nil {
-			log.Printf("Failed to create a session: %v\n", err)
+			return err
 		}
 		cookie := http.Cookie{
 			Name:     "_cookie",
@@ -120,14 +113,13 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 			Secure:   true,
 		}
 		http.SetCookie(w, &cookie)
-		http.Redirect(w, r, "/home", http.StatusTemporaryRedirect)
-		return
+		return nil
 	}
-	if user, err := Login(email, password); err == nil {
-		log.Printf("User has logged in: %v\n", user)
+	user, err := Login(email, password)
+	if err == nil {
 		session, err := user.CreateSession()
 		if err != nil {
-			log.Printf("Failed to create a session: %v\n", err)
+			return err
 		}
 		cookie := http.Cookie{
 			Name:     "_cookie",
@@ -138,10 +130,9 @@ func Authenticate(w http.ResponseWriter, r *http.Request) {
 			Secure:   true,
 		}
 		http.SetCookie(w, &cookie)
-		http.Redirect(w, r, "/home", http.StatusTemporaryRedirect)
-	} else {
-		log.Printf("Failed to log user in with email: %v, error was: %v\n", email, err)
+		return nil
 	}
+	return err
 }
 
 func Logout(w http.ResponseWriter, r *http.Request) {

@@ -3,6 +3,7 @@ package controller
 import (
 	"appeals/app/model"
 	"appeals/app/view"
+	"fmt"
 	"html/template"
 	"log"
 	"net/http"
@@ -37,7 +38,11 @@ func (h home) handleHome(w http.ResponseWriter, r *http.Request) {
 func (h home) handleLogin(w http.ResponseWriter, r *http.Request) {
 	vm := view.NewLogin()
 	if r.Method == http.MethodPost {
-		model.Authenticate(w, r)
+		err := model.Authenticate(w, r)
+		if err == nil {
+			http.Redirect(w, r, "/home", http.StatusTemporaryRedirect)
+		}
+		vm.Warning = fmt.Sprint(err)
 	}
 	w.Header().Add("Content-Type", "text/html")
 	h.loginTemplate.Execute(w, vm)
@@ -47,6 +52,7 @@ func (h home) handleLogout(w http.ResponseWriter, r *http.Request) {
 	vm := view.NewLogin()
 	w.Header().Add("Content-Type", "text/html")
 	model.Logout(w, r)
+	vm.Warning = ""
 	h.loginTemplate.Execute(w, vm)
 }
 

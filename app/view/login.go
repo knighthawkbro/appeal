@@ -4,6 +4,7 @@ type Login struct {
 	Title string
 	//Active   string
 	Email    string
+	Warning  string
 	Password string
 }
 
