@@ -25,12 +25,12 @@
                 <tbody>
                     <tr>
                         <td>{{ .Appeal.ID }}</td>
-                        <td>{{ .Appeal.FirstName }}</td>
-                        <td>{{ .Appeal.LastName }}</td>
-                        <td>{{ .Appeal.Address }}</td>
-                        <td>{{ .Appeal.City }}</td>
-                        <td>{{ .Appeal.State }}</td>
-                        <td>{{ .Appeal.Zip }}</td>
+                        <td>{{ .Appeal.Person.FirstName }}</td>
+                        <td>{{ .Appeal.Person.LastName }}</td>
+                        <td>{{ .Appeal.Person.Address.Address }}</td>
+                        <td>{{ .Appeal.Person.Address.City }}</td>
+                        <td>{{ .Appeal.Person.Address.State }}</td>
+                        <td>{{ .Appeal.Person.Address.Zip }}</td>
                         <td>{{ .Appeal.AppealNumber }}</td>
                     </tr>
                 </tbody>

@@ -6,20 +6,16 @@ import (
 )
 
 type Appeal struct {
-	Title string
-	//Active  string
+	Title  string
 	Appeal *model.Appeal
 	URL    string
 }
 
-func NewAppeal() Appeal {
-	result := Appeal{}
-	return result
-}
-
-func appealtoVM(c model.Appeal) Appeal {
-	return Appeal{
-		URL:   fmt.Sprintf("/shop/%v", c.ID),
-		Title: fmt.Sprintf("Appeals - %v, %v", c.LastName, c.FirstName),
+func NewAppeal(a *model.Appeal) Appeal {
+	result := Appeal{
+		URL:    fmt.Sprintf("/appeal/%v", a.ID),
+		Title:  fmt.Sprintf("Appeals - %v", a.AppealNumber),
+		Appeal: a,
 	}
+	return result
 }
