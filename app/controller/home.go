@@ -51,19 +51,3 @@ func (h home) handleLogout(w http.ResponseWriter, r *http.Request) {
 	vm.Warning = ""
 	h.loginTemplate.Execute(w, vm)
 }
-
-func (h home) handleSearch(w http.ResponseWriter, r *http.Request) {
-	w.Header().Add("Content-Type", "text/html")
-	_, err := model.Sessions(w, r)
-	if err != nil {
-		http.Redirect(w, r, "/login", http.StatusTemporaryRedirect)
-		return
-	}
-	r.ParseForm()
-	id := r.Form.Get("id")
-	r, err = http.NewRequest(http.MethodGet, "/appeal/"+id, r.Body)
-	if err != nil {
-		panic(err)
-	}
-	http.Redirect(w, r, fmt.Sprintf("/appeal/%v", id), http.StatusTemporaryRedirect)
-}
