@@ -7,7 +7,7 @@ import (
 type Home struct {
 	Title string
 	//Active  string
-	Appeals []*model.Appeal
+	Appeals []model.Appeal
 }
 
 func NewHome() Home {

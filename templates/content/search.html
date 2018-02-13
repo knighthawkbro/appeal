@@ -23,15 +23,15 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr>
+                    <tr data-href="/appeal/{{ .Appeal.ID }}">
                         <td>{{ .Appeal.ID }}</td>
-                        <td>{{ .Appeal.Person.FirstName }}</td>
-                        <td>{{ .Appeal.Person.LastName }}</td>
-                        <td>{{ .Appeal.Person.Address.Address }}</td>
-                        <td>{{ .Appeal.Person.Address.City }}</td>
-                        <td>{{ .Appeal.Person.Address.State }}</td>
-                        <td>{{ .Appeal.Person.Address.Zip }}</td>
-                        <td>{{ .Appeal.AppealNumber }}</td>
+                        <td>{{ .Appeal.Appellant.FirstName }}</td>
+                        <td>{{ .Appeal.Appellant.LastName }}</td>
+                        <td>{{ .Appeal.Appellant.Address.Street }}</td>
+                        <td>{{ .Appeal.Appellant.Address.City }}</td>
+                        <td>{{ .Appeal.Appellant.Address.State }}</td>
+                        <td>{{ .Appeal.Appellant.Address.Zip }}</td>
+                        <td>{{ .Appeal.AppealID }}</td>
                     </tr>
                 </tbody>
             </table>

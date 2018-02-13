@@ -10,6 +10,7 @@ import (
 	ldap "gopkg.in/ldap.v2"
 )
 
+// User (Public) -
 type User struct {
 	ID        int
 	Email     string
@@ -30,6 +31,7 @@ const baseDN = "ou=Users,ou=CCA,dc=msd,dc=govt,dc=state,dc=ma,dc=us"
 const adminsDN = "CN=Administrators (CCA),OU=Groups,OU=CCA,DC=msd,DC=govt,DC=state,DC=ma,DC=us"
 const appealsDN = "CN=Appeals (CCA),OU=Groups,OU=CCA,DC=msd,DC=govt,DC=state,DC=ma,DC=us"
 
+// Login (Public) -
 func Login(username, password string) (*User, error) {
 	l, err := ldap.Dial("tcp", fmt.Sprintf("%s:%d", servername, port))
 	if err != nil {
@@ -43,7 +45,7 @@ func Login(username, password string) (*User, error) {
 	Groups := fmt.Sprintf("(|(memberof=%v)(memberof=%v))",
 		ldap.EscapeFilter(adminsDN),
 		ldap.EscapeFilter(appealsDN))
-	usedUsername := username
+	//usedUsername := username
 	if strings.Contains(username, "msd\\") {
 		x := strings.Split(username, "\\")
 		username = x[1]
@@ -75,16 +77,10 @@ func Login(username, password string) (*User, error) {
 		LastName:  sr.Entries[0].GetAttributeValue("sn"),
 		LastLogin: time.Now(),
 	}
-	_, err = db.Exec(`
-		INSERT INTO dbo.tblUserLog ( email, username, firstname, lastname, lastlogin )
-		VALUES ( $1, $2, $3, $4, $5 )`,
-		result.Email, usedUsername, result.FirstName, result.LastName, result.LastLogin)
-	if err != nil {
-		return nil, fmt.Errorf("Could not insert new record into database, Error: %v", err)
-	}
 	return result, nil
 }
 
+// Authenticate (Public) -
 func Authenticate(w http.ResponseWriter, r *http.Request) error {
 	err := r.ParseForm()
 	if err != nil {

@@ -15,26 +15,26 @@
 </div>
 
 <div class="jumbotron">
-    <form action="#" method="">
+    <form method="POST">
         <fieldset>
-            <legend>{{ .Appeal.AppealNumber }}</legend>
+            <legend>{{ .Appeal.AppealID }}</legend>
             <p>
                 <label for="FirstName">First Name:</label>
-                <input type="text" name="FirstName" value="{{ .Appeal.Person.FirstName }}">
+                <input type="text" name="FirstName" value="{{ .Appeal.Appellant.FirstName }}">
                 <label for="LastName">Last Name:</label>
-                <input type="text" name="LastName" value="{{ .Appeal.Person.LastName }}">
+                <input type="text" name="LastName" value="{{ .Appeal.Appellant.LastName }}">
             </p>
             <p>
                 <label for="Address">Address</label>
-                <input type="text" name="Address" value="{{ .Appeal.Person.Address.Address }}" width="200px">
+                <input type="text" name="Address" value="{{ .Appeal.Appellant.Address.Street }}" width="200px">
             </p>
             <p>
                 <label for="City">City</label>
-                <input type="text" name="City" value="{{ .Appeal.Person.Address.City }}">
+                <input type="text" name="City" value="{{ .Appeal.Appellant.Address.City }}">
                 <label for="City">State</label>
-                <input type="text" name="State" value="{{ .Appeal.Person.Address.State }}">
+                <input type="text" name="State" value="{{ .Appeal.Appellant.Address.State }}">
                 <label for="City">Zip</label>
-                <input type="text" name="Zip" value="{{ .Appeal.Person.Address.Zip }}">
+                <input type="text" name="Zip" value="{{ .Appeal.Appellant.Address.Zip }}">
             </p>
             <button class="btn btn-primary">Submit</button>
         </fieldset>

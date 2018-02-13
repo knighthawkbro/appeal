@@ -1,0 +1,12 @@
+db:
+  host:     localhost
+  user:     sa
+  password: Bw@lsh92
+  database: appealData
+
+sftp:
+  host:     xsrprd.uhc.com
+  port:     22
+  user:     es008ns
+  password: I5DK63dg
+  folder:   /Export/Production/

@@ -40,18 +40,18 @@
               </tr>
             </thead>
             <tbody>
-            {{ range .Appeals }}
-              <tr data-href="/appeal/{{ .ID }}">
-                <td>{{ .ID }}</td>
-                <td>{{ .Person.FirstName }}</td>
-                <td>{{ .Person.LastName }}</td>
-                <td>{{ .Person.Address.Address }}</td>
-                <td>{{ .Person.Address.City }}</td>
-                <td>{{ .Person.Address.State }}</td>
-                <td>{{ .Person.Address.Zip }}</td>
-                <td>{{ .AppealNumber }}</td>
-              </tr>
-            {{ end }}
+                {{ range .Appeals }}
+                <tr data-href="/appeal/{{ .ID }}">
+                  <td>{{ .ID }}</td>
+                  <td>{{ .Appellant.FirstName }}</td>
+                  <td>{{ .Appellant.LastName }}</td>
+                  <td>{{ .Appellant.Address.Street }}</td>
+                  <td>{{ .Appellant.Address.City }}</td>
+                  <td>{{ .Appellant.Address.State }}</td>
+                  <td>{{ .Appellant.Address.Zip }}</td>
+                  <td></td>
+                </tr>
+              {{ end }}
             </tbody>
           </table>
         </div>

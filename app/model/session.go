@@ -2,49 +2,46 @@ package model
 
 import (
 	"crypto/rand"
-	"database/sql"
 	"fmt"
 	"log"
 	"net/http"
 	"time"
+
+	"github.com/jinzhu/gorm"
 )
 
+// Session (Public) -
 type Session struct {
-	ID        int
-	UUID      string
-	Email     string
-	UserID    string
-	CreatedAt int64
+	gorm.Model
+
+	UUID   string
+	Email  string
+	UserID string
 }
 
+// CreateSession (Public) -
 func (user *User) CreateSession() (Session, error) {
 	result := Session{
-		UUID:      createUUID(),
-		Email:     user.Email,
-		UserID:    user.Username,
-		CreatedAt: time.Now().Unix(),
+		UUID:   createUUID(),
+		Email:  user.Email,
+		UserID: user.Username,
 	}
-	_, err := db.Exec(`
-		INSERT INTO dbo.tblSessions ( uuid, email, user_id, created_at )
-		VALUES ( $1, $2, $3, $4 )`,
-		result.UUID, result.Email, result.UserID, result.CreatedAt)
-	if err != nil {
-		return Session{}, err
-	}
-
+	db.Create(&result)
 	return result, nil
 }
 
+// DestroySession (Public) -
 func DestroySession(uuid string) error {
-	_, err := db.Exec(`
-		DELETE FROM dbo.tblSessions
-		WHERE uuid = $1`, uuid)
-	if err != nil {
-		return err
+	session := Session{}
+	db.Where("uuid = ?", uuid).First(&session)
+	if session.ID == 0 {
+		return fmt.Errorf("Could not the record")
 	}
+	db.Delete(&session)
 	return nil
 }
 
+// createUUID (Private) -
 func createUUID() string {
 	u := new([16]byte)
 	_, err := rand.Read(u[:])
@@ -59,6 +56,7 @@ func createUUID() string {
 	return fmt.Sprintf("%x-%x-%x-%x-%x", u[0:4], u[4:6], u[6:8], u[8:10], u[10:])
 }
 
+// Sessions (Public) -
 func Sessions(w http.ResponseWriter, r *http.Request) (Session, error) {
 	cookie, err := r.Cookie("_cookie")
 	if err != nil {
@@ -71,39 +69,28 @@ func Sessions(w http.ResponseWriter, r *http.Request) (Session, error) {
 	return result, nil
 }
 
-// Session.Check is a per request check on the database to see if a session is still active,
+// Check (Public) - is a per request check on the database to see if a session is still active,
 // It kills expired sessions and updates
 func (s *Session) Check() (bool, error) {
-	row := db.QueryRow(`
-		SELECT id, uuid, email, user_id, created_at 
-		FROM dbo.tblSessions 
-		WHERE uuid = $1`, s.UUID)
-	err := row.Scan(&s.ID, &s.UUID, &s.Email, &s.UserID, &s.CreatedAt)
-	switch {
-	case err == sql.ErrNoRows:
+	row := Session{}
+	db.Find(&row, "uuid = ?", s.UUID)
+	if row.UUID == "" {
 		return false, fmt.Errorf("Session doesn't exist")
-	case err != nil:
-		return false, err
 	}
-	if s.CreatedAt > (time.Now().Unix() + 3600) {
-		_, err := db.Exec(`
-			UPDATE dbo.tblSessions
-			SET created_at = $1
-			WHERE uuid = $2`, time.Now().Unix(), s.UUID)
-		if err != nil {
-			return true, err
-		}
+	if row.CreatedAt.Unix() > (time.Now().Unix() + 3600) {
+		db.Model(&row).Update("created_at", time.Now())
 	}
 	DestroyExpired()
 	return true, nil
 }
 
+// DestroyExpired (Public) -  Need to fix this function
 func DestroyExpired() {
-
-	_, err := db.Exec(`
-		DELETE FROM dbo.tblSessions
-		WHERE created_at < $1`, time.Now().Unix()-3600)
-	if err != nil {
-		log.Println(err)
+	sessions := []Session{}
+	db.Find(&sessions)
+	for _, sess := range sessions {
+		if sess.CreatedAt.Unix() < time.Now().Unix()-3600 {
+			db.Delete(&sess)
+		}
 	}
 }

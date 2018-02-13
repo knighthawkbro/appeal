@@ -4,19 +4,45 @@ import (
 	"appeals/app/controller"
 	"appeals/app/middleware"
 	"appeals/app/model"
-	"database/sql"
 	"fmt"
 	"html/template"
 	"io/ioutil"
-	"log"
 	"net/http"
 	"os"
 
-	_ "github.com/denisenkom/go-mssqldb"
+	"github.com/jinzhu/configor"
+	"github.com/jinzhu/gorm"
+	_ "github.com/jinzhu/gorm/dialects/mssql"
 )
+
+var config = struct {
+	DB struct {
+		Host     string
+		User     string
+		Password string `required:"true"`
+		Database string
+	}
+
+	SFTP struct {
+		Host     string
+		Port     int
+		User     string
+		Password string `required:"true"`
+		Folder   string `required:"true"`
+	}
+}{}
+
+// DBConf (Public) -
+type DBConf struct {
+	Host     string
+	User     string
+	Password string
+	Database string
+}
 
 func main() {
 	// Main function should only start up everything
+	loadConfig()
 	templates := populateTemplates()
 	db := connectToDatabase()
 	defer db.Close()
@@ -24,10 +50,24 @@ func main() {
 	http.ListenAndServeTLS(":8000", "cert.pem", "key.pem", &middleware.TimeoutMiddleware{new(middleware.GzipMiddleware)})
 }
 
-func connectToDatabase() *sql.DB {
-	db, err := sql.Open("mssql", "server=localhost;database=appealData;user id=sa;password=Bw@lsh92;")
+func loadConfig() {
+	if _, err := os.Stat("./config.yml"); err != nil {
+		panic("no configuration file found")
+	}
+	configor.Load(&config, "config.yml")
+}
+
+func connectToDatabase() *gorm.DB {
+	dbconf := DBConf{
+		Host:     config.DB.Host,
+		User:     config.DB.User,
+		Password: config.DB.Password,
+		Database: config.DB.Database,
+	}
+	// Step1: Create the Database instance and takes the boolean flag to either populate it with data or not
+	db, err := gorm.Open("mssql", fmt.Sprintf("sqlserver://%v:%v@%v:1433?database=%v", dbconf.User, dbconf.Password, dbconf.Host, dbconf.Database))
 	if err != nil {
-		log.Fatal(fmt.Errorf("Unable to connect to database: %v", err))
+		panic(err.Error())
 	}
 	model.SetDatabase(db)
 	return db

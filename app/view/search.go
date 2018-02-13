@@ -10,7 +10,7 @@ type Search struct {
 	Page         int
 	ItemsPerPage int
 	Warning      string
-	Appeal       *model.Appeal
+	Appeal       model.Appeal
 }
 
 func NewSearch() Search {

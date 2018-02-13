@@ -31,16 +31,16 @@ func (n *Notice) footerFunc() {
 	n.Document.MultiCell(0, 5, "Health Connector Appeals Unit\nP.O. Box 960189, Boston, MA 02196\n617-933-3030 Fax 617-933-3099\nBusiness Hours Monday-Friday 8am-5pm", "0", "C", false)
 }
 
-func (n *Notice) appealHeaderFunc(a *Appeal) {
+func (n *Notice) appealHeaderFunc(a Appeal) {
 	t := time.Now()
 	n.Document.Ln(0.1)
 	n.Document.Cellf(0, 10, "%v %v, %v", t.Month(), t.Day(), t.Year())
 	n.Document.Ln(13)
-	n.Document.Cellf(0, 10, "%v %v", a.Person.FirstName, a.Person.LastName)
+	n.Document.Cellf(0, 10, "%v %v", a.Appellant.FirstName, a.Appellant.LastName)
 	n.Document.Ln(4)
-	n.Document.Cellf(0, 10, "%v", a.Person.Address.Address)
+	n.Document.Cellf(0, 10, "%v", a.Appellant.Address.Street)
 	n.Document.Ln(4)
-	n.Document.Cellf(0, 10, "%v, %v %v", a.Person.Address.City, a.Person.Address.State, a.Person.Address.Zip)
+	n.Document.Cellf(0, 10, "%v, %v %v", a.Appellant.Address.City, a.Appellant.Address.State, a.Appellant.Address.Zip)
 	n.Document.Ln(10)
 	n.Document.Line(15, 56, 190.5, 56)
 	n.Document.Line(15, 65.5, 190.5, 65.5)
@@ -48,11 +48,11 @@ func (n *Notice) appealHeaderFunc(a *Appeal) {
 	n.Document.Cell(15, 10, "Appeal - Acknowledgement of Appeal")
 	n.Document.Ln(4)
 	n.Document.Cell(12, 10, "")
-	n.Document.Cellf(0, 10, "Appeal Number: %v", a.AppealNumber)
+	n.Document.Cellf(0, 10, "Appeal Number: %v", a.AppealID)
 	n.Document.Ln(12)
 }
 
-func (n *Notice) bodyFunc(a *Appeal) {
+func (n *Notice) bodyFunc(a Appeal) {
 	n.Document.SetCellMargin(7)
 	var templ *template.Template
 	templ, err := templ.ParseFiles("./assets/templates/acknowledgementNoAidPending.html")
@@ -83,7 +83,7 @@ func setFonts(pdf *gofpdf.Fpdf) {
 }
 
 // NewNotice Generates a new notice.
-func NewNotice(appeal *Appeal) *Notice {
+func NewNotice(appeal Appeal) *Notice {
 	notice := &Notice{}
 	notice.Document = gofpdf.New("P", "mm", "A4", "./assets/fonts/")
 
