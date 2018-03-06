@@ -8,11 +8,14 @@ import (
 // database
 func GetAppealByID(id int) (Appeal, error) {
 	r := Appeal{}
-	db.Debug().Preload("Appellant").Preload("Appellant.Address").Find(&r, "ID = ?", id)
+	db.Preload("Appellant").Preload("Appellant.Address").Preload("Appellant.Rep").
+		Preload("Appellant.Rep.Address").Preload("Reason").Preload("IDR").
+		Preload("IDR.Issue").Preload("Outreach").Preload("Action").
+		Preload("Action.Hearing").Preload("Action.Accessibility").Find(&r, "ID = ?", id)
 	if r.ID == 0 {
 		return r, fmt.Errorf("Not an Appeal")
 	}
-	fmt.Println(r)
+	//fmt.Println(r)
 	return r, nil
 }
 
