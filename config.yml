@@ -1,5 +1,5 @@
 db:
-  host:     localhost
+  host:     mssql
   user:     sa
   password: Bw@lsh92
   database: appealData
