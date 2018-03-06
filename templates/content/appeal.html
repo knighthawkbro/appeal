@@ -13,36 +13,265 @@
         </div>
     </div>
 </div>
+<div class="container">
+    <div class="jumbotron">
+        <div class="row">   
+            <form method="POST">
+                <fieldset>
+                    {{ if .Appeal.AppealID }}<legend>Case for Appeal Number: {{ .Appeal.AppealID }}</legend>{{ end }}
+                    <input type="hidden" name="id" value="{{ .Appeal.ID }}">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a data-toggle="tab" href="#appellant">Appellant</a></li>
+                        <li><a data-toggle="tab" href="#rep">Rep</a></li>
+                        <li><a data-toggle="tab" href="#appeal">Appeal</a></li>
+                        <li><a data-toggle="tab" href="#reason">Reason</a></li>
+                        <li><a data-toggle="tab" href="#IDR">Internal Dispute Resolution</a></li>
+                        <li><a data-toggle="tab" href="#outreach">Outreach</a></li>
+                        <li><a data-toggle="tab" href="#action">CCA Action</a></li>
+                        <li><a data-toggle="tab" href="#hearing">Hearing</a></li>
+                    </ul>
+                        
+                    <div class="tab-content">
+                        <div id="appellant" class="tab-pane fade in active col-lg-10 col-lg-offset-1">
+                            <h3>Appellant's Information</h3>
+                            <p>
+                                <label for="FirstName">First Name:</label>
+                                <input type="text" name="FirstName" value="{{ .Appeal.Appellant.FirstName }}">
+                                <label for="LastName">Last Name:</label>
+                                <input type="text" name="LastName" value="{{ .Appeal.Appellant.LastName }}">
+                            </p>
+                            <p>
+                                <label for="DOB">DOB</label>
+                                <input type="text" name="DOB" value="{{ .Appeal.Appellant.DOB }}">
+                                <label for="MemberID">Member ID</label>
+                                <input type="text" name="MemberID" value="{{ .Appeal.Appellant.MemberID }}">
+                            </p>
+                            <hr>
+                            <p>
+                                <label for="Address">Address</label>
+                                <input type="text" name="Address" value="{{ .Appeal.Appellant.Address.Street }}" style="width:400px;">
+                            </p>
+                            <p>
+                                <label for="City">City</label>
+                                <input type="text" name="City" value="{{ .Appeal.Appellant.Address.City }}">
+                                <label for="City">State</label>
+                                <input type="text" name="State" value="{{ .Appeal.Appellant.Address.State }}">
+                                <label for="City">Zip</label>
+                                <input type="text" name="Zip" value="{{ .Appeal.Appellant.Address.Zip }}" >
+                            </p>
+                            <p>
+                                <label for="Phone">Phone</label>
+                                <input type="text" name="Phone" value="{{ .Appeal.Appellant.Phone }}">
+                                <label for="Email">Email</label>
+                                <input type="text" name="Email" value="{{ .Appeal.Appellant.Email }}" style="width:400px;">
+                            </p>
+                        </div>
+                        <div id="rep" class="tab-pane fade col-lg-10 col-lg-offset-1">
+                            <h3>Representative's Information</h3>
+                            <p>
+                                <label for="FirstName">First Name:</label>
+                                <input type="text" name="RepFirstName" value="{{ .Appeal.Appellant.Rep.FirstName }}">
+                                <label for="LastName">Last Name:</label>
+                                <input type="text" name="RepLastName" value="{{ .Appeal.Appellant.Rep.LastName }}">
+                            </p>
+                            <p>
+                                <label for="Address">Address</label>
+                                <input type="text" name="RepAddress" value="{{ .Appeal.Appellant.Rep.Address.Street }}" style="width:400px;">
+                            </p>
+                            <p>
+                                <label for="City">City</label>
+                                <input type="text" name="RepCity" value="{{ .Appeal.Appellant.Rep.Address.City }}">
+                                <label for="City">State</label>
+                                <input type="text" name="RepState" value="{{ .Appeal.Appellant.Rep.Address.State }}">
+                                <label for="City">Zip</label>
+                                <input type="text" name="RepZip" value="{{ .Appeal.Appellant.Rep.Address.Zip }}">
+                            </p>
+                        </div>
+                        <div id="appeal" class="tab-pane fade">
+                            <h3>Appeal Information</h3>
+                            <p>
+                                <label for="AppealID">Appeal ID</label>
+                                {{ .Appeal.AppealID }}
+                                &nbsp;
+                                <label for="IsOnline">Is Online?</label>
+                                <input type="checkbox" name="IsOnline" {{ if .Appeal.IsOnline }}checked{{ end }}>
+                                &nbsp;
+                                <label for="UNDPRU">UNDPRU</label>
+                                <input type="checkbox" name="UNDPRU" {{ if .Appeal.UNDPRU }}checked{{ end }}>
+                                &nbsp;
+                                <label for="EnrollmentYear">Enrollment Year</label>
+                                <input type="text" name="EnrollmentYear" value="{{ .Appeal.EnrollmentYear }}">
+                            </p>
+                            <p>
+                                <label for="NoticeDate">Notice Date</label>
+                                <input type="text" name="NoticeDate" value="{{ formatTime .Appeal.NoticeDate false }}">
+                                <label for="DateEntered">Date Entered</label>
+                                <input type="text" name="DateEntered" value="{{ formatTime .Appeal.DateEntered true }}">
+                                <label for="DateReceived">Date Received</label>
+                                <input type="text" name="DateReceived" value="{{ formatTime .Appeal.DateReceived false }}">
+                            </p>
+                            <p>
+                                <label for="Comments">Comments</label>
+                                <textarea name="Comments" class="form-control" rows="5" id="Comments">{{ .Appeal.Comments }}</textarea>
+                            </p>
+                        </div>
+                        <div id="reason" class="tab-pane fade">
+                            <h3>Appeal Reasons</h3>
+                            <p>
+                                <label for="Income">Income</label>
+                                <input type="checkbox" name="Income" {{ if .Appeal.Reason.Income }}checked{{ end }}>
+                                &nbsp;
+                                <label for="FamilySize">Family Size</label>
+                                <input type="checkbox" name="FamilySize" {{ if .Appeal.Reason.FamilySize }}checked{{ end }}>
+                                &nbsp;
+                                <label for="PremiumWavier">Premium Wavier</label>
+                                <input type="checkbox" name="PremiumWavier" {{ if .Appeal.Reason.PremiumWavier }}checked{{ end }}>
+                                &nbsp;
+                                <label for="Residency">Residency</label>
+                                <input type="checkbox" name="Residency" {{ if .Appeal.Reason.Residency }}checked{{ end }}>
+                                &nbsp;
+                                <label for="LawfulPresence">Lawful Presence</label>
+                                <input type="checkbox" name="LawfulPresence" {{ if .Appeal.Reason.LawfulPresence }}checked{{ end }}>
+                            </p>
+                            <p>
+                                <label for="OtherInsurance">Other Insurance</label>
+                                <input type="checkbox" name="OtherInsurance" {{ if .Appeal.Reason.OtherInsurance }}checked{{ end }}>
+                                &nbsp;
+                                <label for="Incarceration">Incarceration</label>
+                                <input type="checkbox" name="Incarceration" {{ if .Appeal.Reason.Incarceration }}checked{{ end }}>
+                                &nbsp;
+                                <label for="Other">Other</label>
+                                <input type="checkbox" name="Other" {{ if .Appeal.Reason.Other }}checked{{ end }}>
+                                &nbsp;
+                                <label for="OtherReason">Other Reason</label>
+                                <input type="text" name="OtherReason" value="{{ .Appeal.Reason.OtherReason }}">
+                            </p>
+                        </div>
+                        <div id="IDR" class="tab-pane fade">
+                            <h3>Internal Dispute Resolution</h3>
+                            <p>
+                                <label for="AidPendingAppplied">Aid Pending Appplied</label>
+                                <input type="checkbox" name="AidPendingAppplied" {{ if .Appeal.IDR.AidPendingAppplied }}checked{{ end }}>
+                                &nbsp;
+                                <label for="AidPendingRemoved">Aid Pending Removed</label>
+                                <input type="checkbox" name="AidPendingRemoved" {{ if .Appeal.IDR.AidPendingRemoved }}checked{{ end }}>
+                                &nbsp;
+                                <label for="InternalReview">Internal Review</label>
+                                <input type="checkbox" name="InternalReview" {{ if .Appeal.IDR.InternalReview }}checked{{ end }}>
+                            </p>
+                            <p>
+                                <label for="CaseHolder">Case Holder</label>
+                                <input type="text" name="CaseHolder" value="{{ .Appeal.IDR.CaseHolder }}">
+                                &nbsp;
+                                <label for="Expedite">Expedite</label>
+                                <input type="checkbox" name="Expedite" {{if .Appeal.IDR.Expedite }}checked{{ end }}>
+                                &nbsp;
+                                <label for="BusinessEvent">Business Event</label>
+                                <input type="text" name="BusinessEvent" value="{{ .Appeal.IDR.BusinessEvent }}">
+                            </p>
+                            <p>
+                                <h4>Issues</h4>
+                                <label for="IDRIncome">Income</label>
+                                <input type="checkbox" name="IDRIncome" {{ if .Appeal.IDR.Issue.Income }}checked{{ end }}>
+                                &nbsp;
+                                <label for="IDRFamilySize">Family Size</label>
+                                <input type="checkbox" name="IDRFamilySize" {{ if .Appeal.IDR.Issue.FamilySize }}checked{{ end }}>
+                                &nbsp;
+                                <label for="PWDenial">Premium Wavier Denial</label>
+                                <input type="checkbox" name="PWDenial" {{ if .Appeal.IDR.Issue.PWDenial }}checked{{ end }}>
+                                &nbsp;
+                                <label for="PublicMEC">Public MEC</label>
+                                <input type="checkbox" name="PublicMEC" {{ if .Appeal.IDR.Issue.PublicMEC }}checked{{ end }}>
+                                &nbsp;
+                                <label for="PublicMECText">Public MEC</label>
+                                <input type="text" name="PublicMECText" value="{{ .Appeal.IDR.Issue.PublicMECText }}">
+                            </p>
+                            <p>
+                                <label for="IDRResidency">Residency</label>
+                                <input type="checkbox" name="IDRResidency" {{ if .Appeal.IDR.Issue.Residency }}checked{{ end }}>
+                                &nbsp;
+                                <label for="IDRLawfulPresence">Lawful Presence</label>
+                                <input type="checkbox" name="IDRLawfulPresence" {{ if .Appeal.IDR.Issue.LawfulPresence }}checked{{ end }}>
+                                &nbsp;
+                                <label for="IDROther">Other</label>
+                                <input type="checkbox" name="IDROther" {{ if .Appeal.IDR.Issue.Other }}checked{{ end }}>
+                                &nbsp;
+                                <label for="IDROtherReason">Other Reason</label>
+                                <input type="text" name="IDROtherReason" value="{{ .Appeal.IDR.Issue.OtherReason }}">
+                                &nbsp;
+                                <label for="SEP">SEP</label>
+                                <input type="checkbox" name="SEP" {{ if .Appeal.IDR.Issue.SEP }}checked{{ end }}>
+                            </p>
+                            <p>
+                                <label for="ESI">ESI</label>
+                                <input type="checkbox" name="ESI" {{ if .Appeal.IDR.Issue.ESI }}checked{{ end }}>
+                                &nbsp;
+                                <label for="IncarcerationStatus">Incarceration Status</label>
+                                <input type="checkbox" name="IncarcerationStatus" {{ if .Appeal.IDR.Issue.IncarcerationStatus }}checked{{ end }}>
+                                &nbsp;
+                                <label for="TaxFilling">Tax Filling</label>
+                                <input type="checkbox" name="TaxFilling" {{ if .Appeal.IDR.Issue.TaxFilling }}checked{{ end }}>
+                            </p>
+                        </div>
+                        <div id="outreach" class="tab-pane fade">
+                            <h3>Outreach</h3>
+                            <!--Notes         string `gorm:"size:MAX"`
+                                ContactMethod string
+                                ContactMade   bool
+                                Outcome       string
+                                TimeSpent     uint-->
+                            {{ range .Appeal.Outreach }}
+                            <p>
+                                <label for="Notes">Notes</label>
+                                <textarea name="Notes" id="Notes" style="width:100%;" rows="5">{{ .Notes }}</textarea>
+                            </p>
+                            <p>
+                                <label for="ContactMethod">Contact Method: <input type="text" name="ContactMethod" value="{{ .ContactMethod }}"></label>
+                                &nbsp;
+                                <label for="ContactMade">Contact Made: <input type="checkbox" name="ContactMade" {{ if .ContactMade }}checked{{ end }}></label>    
+                                &nbsp;
+                                <label for="Outcome">Outcome: <input type="text" name="Outcome" value="{{ .Outcome }}"></label>
+                            </p>
+                            <p>
+                                <label for="TimeSpent">Time Spent: <input type="text" name="TimeSpent" value="{{ .TimeSpent }}"></label>
+                                &nbsp;
+                                <label for="CreatedAt">Created At: {{ formatTime .CreatedAt true }}</label>   
+                                &nbsp;
+                                <label for="UpdatedAt">Updated At: {{ formatTime .UpdatedAt true }}</label>
+                            </p>
+                            {{ end }}
+                        </div>
+                        <div id="action" class="tab-pane fade">
+                            <h3>CCA Action</h3>
+                            <p>
+                                Test
+                            </p>
+                        </div>
+                        <div id="hearing" class="tab-pane fade">
+                            <h3>Hearing</h3>
+                            <p>
+                                Test
+                            </p>
+                        </div>
+                    </div>
+                </fieldset>
+                <div class="row col-lg-2 col-lg-offset-4"><button class="btn btn-primary" style="width:100%;">Submit</button></div> 
+            </form> 
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-lg-6">
+                <h2>Notice</h2>
+                <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal" data-whatever="{{ .Appeal.ID }}">Acknowledgement Letter</button>
+            </div>
+            <div class="col-lg-6">
+                <label for="NoticeComments">Notice Comments</label>
+                <textarea name="NoticeComments" class="form-control" id="NoticeComments" rows="10">{{ .Appeal.NoticeComments }}</textarea>
+            </div>
+        </div>
+    </div>
+</div>
 
-<div class="jumbotron">
-    <form method="POST">
-        <fieldset>
-            <legend>{{ .Appeal.AppealID }}</legend>
-            <p>
-                <label for="FirstName">First Name:</label>
-                <input type="text" name="FirstName" value="{{ .Appeal.Appellant.FirstName }}">
-                <label for="LastName">Last Name:</label>
-                <input type="text" name="LastName" value="{{ .Appeal.Appellant.LastName }}">
-            </p>
-            <p>
-                <label for="Address">Address</label>
-                <input type="text" name="Address" value="{{ .Appeal.Appellant.Address.Street }}" width="200px">
-            </p>
-            <p>
-                <label for="City">City</label>
-                <input type="text" name="City" value="{{ .Appeal.Appellant.Address.City }}">
-                <label for="City">State</label>
-                <input type="text" name="State" value="{{ .Appeal.Appellant.Address.State }}">
-                <label for="City">Zip</label>
-                <input type="text" name="Zip" value="{{ .Appeal.Appellant.Address.Zip }}">
-            </p>
-            <button class="btn btn-primary">Submit</button>
-        </fieldset>
-        <p>
-            <h2>Notice</h2>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#modal" data-whatever="{{ .Appeal.ID }}">Acknowledgement Letter</button>
-        </p>
-    </form> 
 {{ end }}
 
 {{ define "script" }}
