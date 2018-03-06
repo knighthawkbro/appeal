@@ -4,6 +4,7 @@ import (
 	"appeals/app/controller"
 	"appeals/app/middleware"
 	"appeals/app/model"
+	"appeals/app/view"
 	"fmt"
 	"html/template"
 	"io/ioutil"
@@ -101,7 +102,9 @@ func populateTemplates() map[string]*template.Template {
 		}
 		f.Close()
 		tmpl := template.Must(layout.Clone())
-		_, err = tmpl.Parse(string(content))
+		_, err = tmpl.Funcs(template.FuncMap{
+			"formatTime": view.FormatTime,
+		}).Parse(string(content))
 		if err != nil {
 			panic("Failed to parse contents of '" + fi.Name() + "' as template")
 		}
