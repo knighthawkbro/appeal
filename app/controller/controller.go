@@ -12,10 +12,10 @@ var (
 	appealController appeal
 )
 
+// Startup (Public) -
 func Startup(templates map[string]*template.Template) {
 	homeController.homeTemplate = templates["home.html"]
 	homeController.loginTemplate = templates["login.html"]
-	//homeController.searchTemplate = templates["search.html"]
 	appealController.appealTemplate = templates["appeal.html"]
 	homeController.registerRoutes()
 	noticeController.registerRoutes()
