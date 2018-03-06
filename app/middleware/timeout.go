@@ -6,6 +6,7 @@ import (
 	"time"
 )
 
+// TimeoutMiddleware (Public) -
 type TimeoutMiddleware struct {
 	Next http.Handler
 }
@@ -16,7 +17,8 @@ func (tm TimeoutMiddleware) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ctx := r.Context()
-	ctx, _ = context.WithTimeout(ctx, 3*time.Second)
+	ctx, cancel := context.WithTimeout(ctx, 3*time.Second)
+	defer cancel()
 	r.WithContext(ctx)
 	ch := make(chan struct{})
 	go func() {

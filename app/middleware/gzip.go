@@ -7,6 +7,7 @@ import (
 	"strings"
 )
 
+// GzipMiddleware (Public) -
 type GzipMiddleware struct {
 	Next http.Handler
 }
