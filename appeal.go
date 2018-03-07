@@ -23,14 +23,6 @@ var config = struct {
 		Password string `required:"true"`
 		Database string
 	}
-
-	SFTP struct {
-		Host     string
-		Port     int
-		User     string
-		Password string `required:"true"`
-		Folder   string `required:"true"`
-	}
 }{}
 
 // DBConf (Public) -
@@ -48,7 +40,7 @@ func main() {
 	db := connectToDatabase()
 	defer db.Close()
 	controller.Startup(templates)
-	http.ListenAndServeTLS(":8000", "cert.pem", "key.pem", &middleware.TimeoutMiddleware{new(middleware.GzipMiddleware)})
+	http.ListenAndServeTLS(":8000", "cert.pem", "key.pem", &middleware.TimeoutMiddleware{Next: new(middleware.GzipMiddleware)})
 }
 
 func loadConfig() {
