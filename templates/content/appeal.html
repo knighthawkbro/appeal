@@ -87,7 +87,7 @@
                                 <input type="text" name="RepZip" value="{{ .Appeal.Appellant.Rep.Address.Zip }}">
                             </p>
                         </div>
-                        <div id="appeal" class="tab-pane fade">
+                        <div id="appeal" class="tab-pane fade col-lg-10 col-lg-offset-1">
                             <h3>Appeal Information</h3>
                             <p>
                                 <label for="AppealID">Appeal ID</label>
@@ -115,7 +115,7 @@
                                 <textarea name="Comments" class="form-control" rows="5" id="Comments">{{ .Appeal.Comments }}</textarea>
                             </p>
                         </div>
-                        <div id="reason" class="tab-pane fade">
+                        <div id="reason" class="tab-pane fade col-lg-10 col-lg-offset-1">
                             <h3>Appeal Reasons</h3>
                             <p>
                                 <label for="Income">Income</label>
@@ -147,7 +147,7 @@
                                 <input type="text" name="OtherReason" value="{{ .Appeal.Reason.OtherReason }}">
                             </p>
                         </div>
-                        <div id="IDR" class="tab-pane fade">
+                        <div id="IDR" class="tab-pane fade col-lg-10 col-lg-offset-1">
                             <h3>Internal Dispute Resolution</h3>
                             <p>
                                 <label for="AidPendingAppplied">Aid Pending Appplied</label>
@@ -213,7 +213,7 @@
                                 <input type="checkbox" name="TaxFilling" {{ if .Appeal.IDR.Issue.TaxFilling }}checked{{ end }}>
                             </p>
                         </div>
-                        <div id="outreach" class="tab-pane fade">
+                        <div id="outreach" class="tab-pane fade col-lg-10 col-lg-offset-1">
                             <h3>Outreach</h3>
                             <!--Notes         string `gorm:"size:MAX"`
                                 ContactMethod string
@@ -240,14 +240,16 @@
                                 <label for="UpdatedAt">Updated At: {{ formatTime .UpdatedAt true }}</label>
                             </p>
                             {{ end }}
+                            <p></p>
+                            <button class="new">Add New</button>
                         </div>
-                        <div id="action" class="tab-pane fade">
+                        <div id="action" class="tab-pane fade col-lg-10 col-lg-offset-1">
                             <h3>CCA Action</h3>
                             <p>
                                 Test
                             </p>
                         </div>
-                        <div id="hearing" class="tab-pane fade">
+                        <div id="hearing" class="tab-pane fade col-lg-10 col-lg-offset-1">
                             <h3>Hearing</h3>
                             <p>
                                 Test
